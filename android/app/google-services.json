@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "618937135585",
+    "project_id": "community-hub-5ff53",
+    "storage_bucket": "community-hub-5ff53.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618937135585:android:40e94def0d796efbcb62a0",
+        "android_client_info": {
+          "package_name": "com.tokoloho.communityhub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "618937135585-th7asp3kddf0rerd68k3n9amnbcemdkh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzXzj0-neJvk3uG6t4LpyV6Z5XKKEfoRs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "618937135585-th7asp3kddf0rerd68k3n9amnbcemdkh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
