@@ -8,8 +8,8 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { doc, updateDoc} from 'firebase/firestore';
-import { db } from '../../Data/firebase'
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../Data/firebase';
 import './ResourceCard.css';
 
 const ResourceCard = ({ resource }) => {
@@ -40,6 +40,8 @@ const ResourceCard = ({ resource }) => {
         return 'status pickup';
       case 'Emergency SOS':
         return 'status emergency';
+      case 'Collected':
+        return 'status collected';
       default:
         return 'status default';
     }
@@ -65,6 +67,15 @@ const ResourceCard = ({ resource }) => {
     }
   };
 
+  // 🔹 Format and handle structured or old location data
+  let formattedLocation = '';
+  if (typeof resource.location === 'object' && resource.location !== null) {
+    const { addressLine1, suburb, city, postalCode } = resource.location;
+    formattedLocation = `${addressLine1 || ''}${suburb ? `, ${suburb}` : ''}${city ? `, ${city}` : ''}${postalCode ? `, ${postalCode}` : ''}`;
+  } else {
+    formattedLocation = resource.location || 'No location provided';
+  }
+
   return (
     <div className="resource-card">
       <div className="card-header">
@@ -76,23 +87,40 @@ const ResourceCard = ({ resource }) => {
           {resource.status}
         </span>
       </div>
+
+      {/* 🔹 Multi-line location display */}
       <div className="location">
         <MapPin className="map-icon" />
-        {resource.location}
+        <div className="location-text">
+          {typeof resource.location === 'object' ? (
+            <>
+              <div>{resource.location.addressLine1}</div>
+              {resource.location.suburb && <div>{resource.location.suburb}</div>}
+              {resource.location.city && <div>{resource.location.city}</div>}
+              {resource.location.postalCode && <div>{resource.location.postalCode}</div>}
+            </>
+          ) : (
+            <span>{formattedLocation}</span>
+          )}
+        </div>
       </div>
+
       <div className="card-actions">
         {resource.urgency === 'emergency' ? (
-          <button className="button emergency pulse">
-            🆘 Respond to Emergency
-          </button>
+          <button className="button emergency pulse">🆘 Respond to Emergency</button>
         ) : (
           <>
-            <button className="button collect" onClick={handleCollectClick}>Help Collect</button>
-            <button className="button donate" onClick={() => setShowConfirm(true)}>Collected</button>
+            <button className="button collect" onClick={handleCollectClick}>
+              Help Collect
+            </button>
+            <button className="button donate" onClick={() => setShowConfirm(true)}>
+              Collected
+            </button>
           </>
         )}
       </div>
-       {showConfirm && (
+
+      {showConfirm && (
         <div className="confirmation-popup">
           <p>Are you sure you want to mark this resource as collected?</p>
           <div className="confirmation-buttons">

@@ -1,4 +1,4 @@
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, MapPin, Clock } from 'lucide-react';
 import './SOSCard.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,10 +8,23 @@ const SOSCard = ({ sos }) => {
   const handleRespond = () => {
     navigate('/profile', {
       state: {
-        message: `Responding to SOS: ${sos.type}\nLocation: ${sos.location}\nTime: ${sos.time}`,
+        message: `Responding to SOS: ${sos.type}\nLocation: ${
+          typeof sos.location === 'object'
+            ? `${sos.location.addressLine1}, ${sos.location.suburb}, ${sos.location.city}, ${sos.location.postalCode}`
+            : sos.location
+        }\nTime: ${sos.time}`,
       },
     });
   };
+
+  // 🔹 Format and handle both string/object location
+  let formattedLocation = '';
+  if (typeof sos.location === 'object' && sos.location !== null) {
+    const { addressLine1, suburb, city, postalCode } = sos.location;
+    formattedLocation = `${addressLine1 || ''}${suburb ? `, ${suburb}` : ''}${city ? `, ${city}` : ''}${postalCode ? `, ${postalCode}` : ''}`;
+  } else {
+    formattedLocation = sos.location || 'No location provided';
+  }
 
   return (
     <div className="sos-card">
@@ -24,8 +37,28 @@ const SOSCard = ({ sos }) => {
           {sos.status}
         </span>
       </div>
-      <div className="sos-location">📍 {sos.location}</div>
-      <div className="sos-time">⏰ {sos.time}</div>
+
+      {/* 🔹 Multi-line address display */}
+      <div className="sos-location">
+        <MapPin className="location-icon" />
+        <div className="location-text">
+          {typeof sos.location === 'object' ? (
+            <>
+              <div>{sos.location.addressLine1}</div>
+              {sos.location.suburb && <div>{sos.location.suburb}</div>}
+              {sos.location.city && <div>{sos.location.city}</div>}
+              {sos.location.postalCode && <div>{sos.location.postalCode}</div>}
+            </>
+          ) : (
+            <span>{formattedLocation}</span>
+          )}
+        </div>
+      </div>
+
+      <div className="sos-time">
+        <Clock className="clock-icon" />
+        <span>{sos.time}</span>
+      </div>
 
       <button className="btn-respond" onClick={handleRespond}>
         Respond Now

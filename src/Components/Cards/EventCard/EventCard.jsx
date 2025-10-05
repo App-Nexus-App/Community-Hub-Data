@@ -42,6 +42,17 @@ const EventCard = ({ event, onEdit, onDelete }) => {
     onEdit(event);
   };
 
+  // 🔹 Format location for display
+  let formattedLocation = '';
+  if (typeof event.location === 'object' && event.location !== null) {
+    const { addressLine1, suburb, city, postalCode } = event.location;
+    formattedLocation = `${addressLine1 || ''}${
+      suburb ? `, ${suburb}` : ''
+    }${city ? `, ${city}` : ''}${postalCode ? `, ${postalCode}` : ''}`;
+  } else {
+    formattedLocation = event.location || 'No location provided';
+  }
+
   return (
     <div className="event-card" onClick={handleEdit}>
       <div className="card-header">
@@ -51,7 +62,19 @@ const EventCard = ({ event, onEdit, onDelete }) => {
 
       <div className="event-detail">
         <MapPin className="detail-icon" />
-        <span className="truncate">{event.location}</span>
+        {/* 🔹 Multi-line address display */}
+        <div className="event-location">
+          {typeof event.location === 'object' ? (
+            <>
+              <div>{event.location.addressLine1}</div>
+              {event.location.suburb && <div>{event.location.suburb}</div>}
+              {event.location.city && <div>{event.location.city}</div>}
+              {event.location.postalCode && <div>{event.location.postalCode}</div>}
+            </>
+          ) : (
+            <span>{formattedLocation}</span>
+          )}
+        </div>
       </div>
 
       <div className="event-detail">
@@ -69,10 +92,7 @@ const EventCard = ({ event, onEdit, onDelete }) => {
           <button className="join-button" onClick={handleJoin}>
             Join Ubuntu Spirit
           </button>
-          <button
-            className="delete-button"
-            onClick={handleDelete}
-          >
+          <button className="delete-button" onClick={handleDelete}>
             Delete
           </button>
         </div>
